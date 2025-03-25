@@ -30,8 +30,8 @@ export default defineConfig<TestOptions>({
      //   token: "ARGOS_TOKEN=argos_bb2178296187910b77fc1462c5b01f480b",
       },
     ],
-    // ['json',{outputFile: 'test-results/jsonReport.json'}],
-    // ['junit',{outputFile: 'test-results/junitReport.xml'}],
+     ['json',{outputFile: 'test-results/jsonReport.json'}],
+     ['junit',{outputFile: 'test-results/junitReport.xml'}],
    // ['allure-playwright']
    ['html']
 
