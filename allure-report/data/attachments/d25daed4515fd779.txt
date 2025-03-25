@@ -1,0 +1,194 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: parametrized methods @block
+- Location: C:\Users\tnrup\OneDrive\Documents\Java\Playwright\GitRepo\pw-practice-app\tests\usePageObjects.spec.ts:22:5
+
+# Error details
+
+```
+Error: locator.click: Error: strict mode violation: locator('.day-cell.ng-star-inserted').getByText('26', { exact: true }) resolved to 2 elements:
+    1) <div class="cell-content">26</div> aka getByText('26').first()
+    2) <div class="cell-content">26</div> aka getByText('26').nth(1)
+
+Call log:
+  - waiting for locator('.day-cell.ng-star-inserted').getByText('26', { exact: true })
+
+    at DatepickerPage.selectDateInTheCalendar (C:\Users\tnrup\OneDrive\Documents\Java\Playwright\GitRepo\pw-practice-app\page-objects\datepickerPage.ts:47:99)
+    at DatepickerPage.selectDatepickerWithRangeFromToday (C:\Users\tnrup\OneDrive\Documents\Java\Playwright\GitRepo\pw-practice-app\page-objects\datepickerPage.ts:25:31)
+    at C:\Users\tnrup\OneDrive\Documents\Java\Playwright\GitRepo\pw-practice-app\tests\usePageObjects.spec.ts:38:5
+```
+
+# Page snapshot
+
+```yaml
+- navigation:
+  - link:
+    - img
+  - link "PW-test"
+  - button "Light"
+  - button:
+    - img
+  - link:
+    - img
+  - link:
+    - img
+  - text: Nick Jones
+- list:
+  - listitem:
+    - link "IoT Dashboard":
+      - img
+      - text: IoT Dashboard
+  - listitem: FEATURES
+  - listitem:
+    - link "Forms" [expanded]:
+      - img
+      - text: Forms
+      - img
+    - list:
+      - listitem:
+        - link "Form Layouts"
+      - listitem:
+        - link "Datepicker"
+  - listitem:
+    - link "Modal & Overlays":
+      - img
+      - text: Modal & Overlays
+      - img
+    - list:
+      - listitem:
+        - link "Dialog"
+      - listitem:
+        - link "Window"
+      - listitem:
+        - link "Popover"
+      - listitem:
+        - link "Toastr"
+      - listitem:
+        - link "Tooltip"
+  - listitem:
+    - link "Extra Components":
+      - img
+      - text: Extra Components
+      - img
+    - list:
+      - listitem:
+        - link "Calendar"
+  - listitem:
+    - link "Charts":
+      - img
+      - text: Charts
+      - img
+    - list:
+      - listitem:
+        - link "Echarts"
+  - listitem:
+    - link "Tables & Data":
+      - img
+      - text: Tables & Data
+      - img
+    - list:
+      - listitem:
+        - link "Smart Table"
+      - listitem:
+        - link "Tree Grid"
+  - listitem:
+    - link "Auth":
+      - img
+      - text: Auth
+      - img
+    - list:
+      - listitem:
+        - link "Login"
+      - listitem:
+        - link "Register"
+      - listitem:
+        - link "Request Password"
+      - listitem:
+        - link "Reset Password"
+- text: Common Datepicker
+- textbox "Form Picker": Mar 30, 2025
+- text: Datepicker With Range
+- textbox "Range Picker"
+- text: Datepicker With Disabled Min Max Values
+- textbox "Min Max Picker"
+- navigation:
+  - text: Created with ♥ by
+  - link "Akveo"
+  - text: "2019"
+  - link ""
+  - link ""
+  - link ""
+  - link ""
+- button "March 2025":
+  - text: March 2025
+  - img
+- button:
+  - img
+- button:
+  - img
+- text: Su Mo Tu We Th Fr Sa 23 24 25 26 27 28 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 1 2 3 4 5
+```
+
+# Test source
+
+```ts
+   1 | import {Page, expect} from "@playwright/test";
+   2 | import { HelperBase } from "./helperBase";
+   3 |
+   4 | export class DatepickerPage extends HelperBase {
+   5 |
+   6 |     
+   7 |
+   8 |     constructor(page: Page){
+   9 |         super(page)
+  10 |      }
+  11 |
+  12 |
+  13 | async selectCommonDatePickerDateFromToday (numberOfDaysFromToday: number){
+  14 |
+  15 |     const calendarInputField = this.page.getByPlaceholder('Form Picker')
+  16 |     await calendarInputField.click()
+  17 |     const dateToAssert = await this.selectDateInTheCalendar (numberOfDaysFromToday)
+  18 |     await expect (calendarInputField).toHaveValue(dateToAssert)
+  19 |
+  20 | }
+  21 |
+  22 | async selectDatepickerWithRangeFromToday (startDayFromToday: number, endDayFromToday: number){
+  23 |     const calendarInputField = this.page.getByPlaceholder('Range Picker')
+  24 |     await calendarInputField.click()
+  25 |     const dateToAssertStart = await this.selectDateInTheCalendar (startDayFromToday)
+  26 |     const dateToAssertEnd = await this.selectDateInTheCalendar (endDayFromToday)
+  27 |     const datetoAssert = `${dateToAssertStart} - ${dateToAssertEnd}`
+  28 |     await expect(calendarInputField).toHaveValue(datetoAssert)
+  29 | }
+  30 |
+  31 | private async selectDateInTheCalendar (numberOfDaysFromToday: number)
+  32 | { 
+  33 |     let date = new Date()
+  34 |     date.setDate(date.getDate() + numberOfDaysFromToday)
+  35 |     const expectedDate = date.getDate().toString()
+  36 |     const expectedMonthShot = date.toLocaleString('En-US', {month: 'short'}) 
+  37 |     const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'})
+  38 |     const expectedYear = date.getFullYear()
+  39 |     const dateToAssert = `${expectedMonthShot} ${expectedDate}, ${expectedYear}`
+  40 |     let calendarMonthAndYear = await this.page. locator('nb-calendar-view-mode').textContent()
+  41 |     const expectedMonthAndYear = `${expectedMonthLong} ${expectedYear}`
+  42 |     while (!calendarMonthAndYear.includes (expectedMonthAndYear)){
+  43 |     
+  44 |         await this.page.locator ('nb-calendar-pageable-navigation [data-name="chevron-right"]').click() 
+  45 |         calendarMonthAndYear = await this.page.locator ('nb-calendar-view-mode').textContent()
+  46 |     }
+> 47 |     await this.page.locator('.day-cell.ng-star-inserted').getByText (expectedDate, {exact: true}).click() 
+     |                                                                                                   ^ Error: locator.click: Error: strict mode violation: locator('.day-cell.ng-star-inserted').getByText('26', { exact: true }) resolved to 2 elements:
+  48 |     return dateToAssert
+  49 |     
+  50 |
+  51 | }
+  52 | }
+```

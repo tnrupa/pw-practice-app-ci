@@ -1,0 +1,178 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Form Layouts Page @smoke >> input fields
+- Location: C:\Users\tnrup\OneDrive\Documents\Java\Playwright\GitRepo\pw-practice-app\tests\uiComponents.spec.ts:23:9
+
+# Error details
+
+```
+Error: browserType.connect: WebSocket error: ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 428 Precondition Required
+╔════════════════════════════════════════════════════╗
+║ Playwright version mismatch:                       ║
+║   - server version: v1.50                          ║
+║   - client version: v1.51                          ║
+║                                                    ║
+║ If you are using VSCode extension, restart VSCode. ║
+║                                                    ║
+║ If you are connecting to a remote service,         ║
+║ keep your local Playwright version in sync         ║
+║ with the remote service version.                   ║
+║                                                    ║
+║ <3 Playwright Team                                 ║
+╚════════════════════════════════════════════════════╝
+Call log:
+  - <ws connecting> ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2
+  - <ws unexpected response> ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 428 Precondition Required
+╔════════════════════════════════════════════════════╗
+║ Playwright version mismatch:                       ║
+║   - server version: v1.50                          ║
+║   - client version: v1.51                          ║
+║                                                    ║
+║ If you are using VSCode extension, restart VSCode. ║
+║                                                    ║
+║ If you are connecting to a remote service,         ║
+║ keep your local Playwright version in sync         ║
+║ with the remote service version.                   ║
+║                                                    ║
+║ <3 Playwright Team                                 ║
+╚════════════════════════════════════════════════════╝
+  - <ws error> ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 error WebSocket was closed before the connection was established
+  - <ws connect error> ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 WebSocket was closed before the connection was established
+  - <ws disconnected> ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 code=1006 reason=
+
+```
+
+# Test source
+
+```ts
+   1 | import {test,expect} from '@playwright/test'
+   2 |
+   3 | test.describe.configure ({mode: 'parallel'})
+   4 |
+   5 |
+   6 | test.beforeEach(async({page}) =>{
+   7 |
+   8 |     await page.goto('/')
+   9 |     
+   10 |
+   11 | })
+   12 |
+   13 | test.describe.only('Form Layouts Page @smoke', () => {
+   14 |     test.describe.configure ({retries:2})
+   15 |     test.describe.configure ({mode: 'serial'})
+   16 |
+   17 |     test.beforeEach(async ({page}) =>{
+   18 |         await page.getByText('Forms').click()
+   19 |         await page.getByText('Form Layouts').click()
+   20 |     
+   21 |     })
+   22 |     
+>  23 |     test('input fields',async({page}, testInfo) => {
+      |         ^ Error: browserType.connect: WebSocket error: ws://localhost:64731/0be0a89da9f288dcdb5ab543b7b24bd2 428 Precondition Required
+   24 |
+   25 |         if(testInfo.retry){
+   26 |
+   27 |             //do something
+   28 |         }
+   29 |         const usingTheGridEmailInput = page.locator('nb-card', {hasText: "Using the Grid"}).getByRole('textbox', {name:"Email"})
+   30 |         await usingTheGridEmailInput.fill('test@test.com')
+   31 |         await usingTheGridEmailInput.clear()
+   32 |         await usingTheGridEmailInput.pressSequentially('test2@test.com')
+   33 |
+   34 |         //generic assertion
+   35 |         const inputValue = await usingTheGridEmailInput.inputValue()
+   36 |         expect(inputValue).toEqual('test2@test.com1')
+   37 |
+   38 |         //locator assertion
+   39 |         await expect(usingTheGridEmailInput).toHaveValue('test2@test.com')
+   40 |     })
+   41 |
+   42 |     test('radio buttons @block',async({page}) => {
+   43 |         const usingTheGridForm = page.locator('nb-card', {hasText: "Using the Grid"})
+   44 |
+   45 |         //await usingTheGridForm.getByLabel('Option 1').check({force: true})
+   46 |
+   47 |         await usingTheGridForm.getByRole('radio', {name: "Option 1"}).check({force: true})
+   48 |
+   49 |         const radioStatus = await usingTheGridForm.getByRole('radio', {name: "Option 1"}).isChecked()
+   50 |         expect(radioStatus).toBeTruthy()
+   51 |         await expect(usingTheGridForm.getByRole('radio', {name: "Option 1"})).toBeAttached()
+   52 |
+   53 |         await usingTheGridForm.getByRole('radio', {name: "Option 2"}).check({force: true})
+   54 |         expect(await usingTheGridForm.getByRole('radio', {name: "Option 1"}).isChecked()).toBeFalsy()
+   55 |         expect(await usingTheGridForm.getByRole('radio', {name: "Option 2"}).isChecked()).toBeTruthy()
+   56 |     })
+   57 | })
+   58 |
+   59 |
+   60 | test('checkboxes',async({page}) => {
+   61 |     
+   62 |     await page.getByText('Modal & Overlays').click()
+   63 |     await page.getByText('Toastr').click()
+   64 |     await page.getByRole('checkbox', {name: "Hide on click"}).uncheck({force: true})
+   65 |     await page.getByRole('checkbox', {name: "Prevent arising of duplicate toast"}).check({force: true})
+   66 |
+   67 |     const allBoxes = page.getByRole('checkbox')
+   68 |     for (const box of await allBoxes.all()){
+   69 |         await box.check({force: true})
+   70 |         expect(await box.isChecked()).toBeTruthy()
+   71 |
+   72 |     }
+   73 |
+   74 | })
+   75 |
+   76 | test ('lists and dropdowns',async({page}) => {
+   77 |   
+   78 |     const dropDownMenu = page.locator('ngx-header nb-select')
+   79 |     
+   80 |     await dropDownMenu.click()
+   81 |     page.getByRole('list') //when the  list has UL tag
+   82 |     page.getByRole('listitem') //when the  list has LI tag
+   83 |
+   84 |     //const optionList = page.getByRole('list').locator('nb-option')
+   85 |     const optionList = page.locator('nb-option-list nb-option')
+   86 |     await expect(optionList).toHaveText(["Light", "Dark", "Cosmic", "Corporate"])
+   87 |     
+   88 |     await optionList.filter({hasText: "Cosmic"}).click()
+   89 |     const header = page.locator('nb-layout-header')
+   90 |     await expect(header).toHaveCSS('background-color', 'rgb(50, 50, 89)')
+   91 |
+   92 |     const colors = {
+   93 |         "Light": "rgb(255, 255, 255)", 
+   94 |         "Dark": "rgb(34, 43, 69)", 
+   95 |         "Cosmic": "rgb(50, 50, 89)",
+   96 |         "Corporate": "rgb(255, 255, 255)"
+   97 |     }
+   98 |
+   99 |     await dropDownMenu.click()
+  100 |         for(const color in colors) {
+  101 |         await optionList.filter({hasText: color}).click()
+  102 |         await expect(header).toHaveCSS('background-color', colors[color])
+  103 |        
+  104 |         if(color != "Corporate")
+  105 |             await dropDownMenu.click()
+  106 |
+  107 |
+  108 |     }
+  109 |     
+  110 | })
+  111 |
+  112 | test('tooltips',async({page}) => {
+  113 |     
+  114 |     await page.getByText('Modal & Overlays').click()
+  115 |     await page.getByText('Tooltip').click()
+  116 |     const toolTipCard = page.locator('nb-card', {hasText : "Tooltip Placements"})
+  117 |     await toolTipCard.getByRole("button", {name: "Top"}).hover()
+  118 |
+  119 |     page.getByRole('tooltip') // if you have a role toolyip created
+  120 |     const tooltip = await page.locator('nb-tooltip').textContent()
+  121 |     expect(tooltip).toEqual('This is a tooltip')
+  122 | })
+  123 |
+```

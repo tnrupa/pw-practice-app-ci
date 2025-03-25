@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","9082","navigate to form page @smoke","firefox","Thu Mar 20 18:51:27 CDT 2025","passed","Thu Mar 20 18:51:36 CDT 2025","","tests\usePageObjects.spec.ts","",""
+"","0","radio buttons @block","firefox","Thu Mar 20 18:53:02 CDT 2025","skipped","Thu Mar 20 18:53:02 CDT 2025","Form Layouts Page @smoke","tests\uiComponents.spec.ts","",""
+"","12570","parametrized methods @block","firefox","Thu Mar 20 18:51:48 CDT 2025","failed","Thu Mar 20 18:52:00 CDT 2025","","tests\usePageObjects.spec.ts","",""
+"","6503","input fields","firefox","Thu Mar 20 18:52:54 CDT 2025","failed","Thu Mar 20 18:53:01 CDT 2025","Form Layouts Page @smoke","tests\uiComponents.spec.ts","",""
